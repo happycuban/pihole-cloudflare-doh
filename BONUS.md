@@ -32,6 +32,9 @@ services:
 
 ### 🔧 Dockerfile (Optional Build)
 
+> 🙏 Based on and inspired by: [eltonk/pihole-doh](https://github.com/eltonk/pihole-doh.git)
+
+
 > ⚠️ **You only need this if you want to build the image yourself.**  
 > Otherwise, just use the prebuilt image: `tekmodedk/pihole-doh:2024.07.0-arm`
 
@@ -80,4 +83,10 @@ chmod +x /etc/services.d/cloudflared/finish;
 - You want to keep setup simple (one `docker run` or `compose` service)
 
 ---
+
+### 🛠️ Prefer Modular/Upgradable? Use the two-container solution with Pi-hole and `tekmodedk/cloudflared` instead.
+
+---
+
+🙏 **Special thanks to [eltonk/pihole-doh](https://github.com/eltonk/pihole-doh)** for the original inspiration and method.
 
