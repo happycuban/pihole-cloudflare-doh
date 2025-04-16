@@ -84,9 +84,3 @@ chmod +x /etc/services.d/cloudflared/finish;
 
 ---
 
-### 🛠️ Prefer Modular/Upgradable? Use the two-container solution with Pi-hole and `tekmodedk/cloudflared` instead.
-
----
-
-🙏 **Special thanks to [eltonk/pihole-doh](https://github.com/eltonk/pihole-doh)** for the original inspiration and method.
-
