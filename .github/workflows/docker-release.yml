@@ -30,6 +30,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set Git credentials to use PAT
+        run: |
+          git config --global user.email "release-bot@github.com"
+          git config --global user.name "semantic-release-bot"
+          git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/${{ github.repository }}
+
       - name: Run Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
