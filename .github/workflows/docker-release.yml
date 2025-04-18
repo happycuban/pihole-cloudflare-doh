@@ -38,19 +38,21 @@ jobs:
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
-      - name: Build and Push Docker image
+      
+      - name: Build and Push Docker Image (Docker Hub + GHCR)
         if: steps.semantic.outputs.new_release_published == 'true'
         env:
           VERSION: ${{ steps.semantic.outputs.new_release_version }}
         run: |
-          IMAGE_NAME=tekmodedk/cloudflared
-          GHCR_IMAGE=ghcr.io/${{ github.repository }}
+          VERSION_TAG=v${VERSION}
+          DOCKER_IMAGE=tekmodedk/cloudflared
+          GHCR_IMAGE=ghcr.io/happycuban/pihole-cloudflare-doh
 
           docker buildx build \
             --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            --tag $IMAGE_NAME:latest \
-            --tag $IMAGE_NAME:v$VERSION \
+            --build-arg CLOUDFLARED_VERSION=2024.4.0 \
+            --tag $DOCKER_IMAGE:latest \
+            --tag $DOCKER_IMAGE:$VERSION_TAG \
             --tag $GHCR_IMAGE:latest \
-            --tag $GHCR_IMAGE:v$VERSION \
+            --tag $GHCR_IMAGE:$VERSION_TAG \
             --push .
