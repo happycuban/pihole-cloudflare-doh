@@ -1,0 +1,53 @@
+name: Release Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GH_TOKEN: ${{ secrets.GHTOKEN }}
+
+      - name: Build and Push Docker image
+        if: steps.semantic.outputs.new_release_published == 'true'
+        env:
+          VERSION: ${{ steps.semantic.outputs.new_release_version }}
+        run: |
+          IMAGE_NAME=tekmodedk/cloudflared
+          GHCR_IMAGE=ghcr.io/${{ github.repository }}
+
+          docker buildx build \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
+            --tag $IMAGE_NAME:latest \
+            --tag $IMAGE_NAME:v$VERSION \
+            --tag $GHCR_IMAGE:latest \
+            --tag $GHCR_IMAGE:v$VERSION \
+            --push .
