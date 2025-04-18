@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/happycuban/pihole-cloudflare-doh/compare/v1.0.0...v1.1.0) (2025-04-18)
+
+
+### Features
+
+* Add versions, tags to images ([c863eff](https://github.com/happycuban/pihole-cloudflare-doh/commit/c863eff0a8ed60e69109bf735c6c5ef0188fd08e))
+
 # 1.0.0 (2025-04-18)
 
 
