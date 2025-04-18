@@ -46,13 +46,9 @@ jobs:
         run: |
           VERSION_TAG=v${VERSION}
           DOCKER_IMAGE=tekmodedk/cloudflared
-          GHCR_IMAGE=ghcr.io/happycuban/pihole-cloudflare-doh
 
           docker buildx build \
             --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            --build-arg CLOUDFLARED_VERSION=2024.4.0 \
             --tag $DOCKER_IMAGE:latest \
             --tag $DOCKER_IMAGE:$VERSION_TAG \
-            --tag $GHCR_IMAGE:latest \
-            --tag $GHCR_IMAGE:$VERSION_TAG \
             --push .
