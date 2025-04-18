@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/happycuban/pihole-cloudflare-doh/compare/v1.1.0...v1.1.1) (2025-04-18)
+
+
+### Bug Fixes
+
+* Include pushing to dockerhub and ghcr ([ce54d38](https://github.com/happycuban/pihole-cloudflare-doh/commit/ce54d38f9baf89efb823153c6ef78cbfb666d00c))
+
 # [1.1.0](https://github.com/happycuban/pihole-cloudflare-doh/compare/v1.0.0...v1.1.0) (2025-04-18)
 
 
