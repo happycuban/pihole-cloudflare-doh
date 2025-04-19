@@ -39,16 +39,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       
-      - name: Build and Push Docker Image (Docker Hub + GHCR)
+      - name: Build and Push Docker Image (Docker Hub)
         if: steps.semantic.outputs.new_release_published == 'true'
-        env:
-          VERSION: ${{ steps.semantic.outputs.new_release_version }}
-        run: |
-          VERSION_TAG=v${VERSION}
-          DOCKER_IMAGE=tekmodedk/cloudflared
-
-          docker buildx build \
-            --platform linux/amd64,linux/arm64,linux/arm/v7 \
-            --tag $DOCKER_IMAGE:latest \
-            --tag $DOCKER_IMAGE:$VERSION_TAG \
-            --push .
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/arm/v7
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            tekmodedk/pihole-doh:latest-arm
+            tekmodedk/pihole-doh:v${{ steps.semantic.outputs.new_release_version }}-arm

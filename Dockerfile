@@ -1,20 +1,25 @@
-FROM alpine:latest
+FROM pihole/pihole:2024.07.0
 
 LABEL maintainer="Modesto Hernandez"
-LABEL description="Standalone Cloudflared DoH proxy for Docker"
-LABEL org.opencontainers.image.source="https://github.com/happycuban/pihole-cloudflare-doh"
+LABEL url="https://github.com/happycuban/pihole-cloudflare-doh"
 
-# Install dependencies
-RUN apk add --no-cache curl ca-certificates
+# Install and configure cloudflared
+RUN /bin/bash -c 'cd /tmp; \
+apt-get update; \
+apt-get install wget -y; \
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm; \
+mv ./cloudflared-linux-arm /usr/local/bin/cloudflared; \
+chmod +x /usr/local/bin/cloudflared;'
 
-# Download latest cloudflared binary for current arch
-ARG TARGETARCH
-RUN curl -L -o /usr/local/bin/cloudflared "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${TARGETARCH}" && \
-    chmod +x /usr/local/bin/cloudflared
-
-# Add config
 COPY config.yml /etc/cloudflared/config.yml
 
-EXPOSE 5053/udp 5053/tcp
+RUN /bin/bash -c 'mkdir -p /etc/services.d/cloudflared; \
+echo "#!/usr/bin/env bash" > /etc/services.d/cloudflared/run; \
+echo "s6-echo Starting cloudflared" >> /etc/services.d/cloudflared/run; \
+echo "exec /usr/local/bin/cloudflared --config /etc/cloudflared/config.yml" >> /etc/services.d/cloudflared/run; \
+echo "#!/usr/bin/env bash" > /etc/services.d/cloudflared/finish; \
+echo "s6-echo Stopping cloudflared" >> /etc/services.d/cloudflared/finish; \
+echo "killall -9 cloudflared" >> /etc/services.d/cloudflared/finish;'
 
-ENTRYPOINT ["cloudflared", "--config", "/etc/cloudflared/config.yml"]
+RUN chmod +x /etc/services.d/cloudflared/run; \
+chmod +x /etc/services.d/cloudflared/finish;
